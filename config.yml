@@ -1,0 +1,6 @@
+db:
+  host: 10.210.20.70
+  port: 3306
+  db-name: cmdb
+  username: root
+  password: Passw0rd@_

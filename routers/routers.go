@@ -42,6 +42,7 @@ func Routers() *gin.Engine {
 		userRouter.POST("/user/update", user.UpdateUser)
 		userRouter.DELETE("/user/delete", user.DeleteUser)
 		userRouter.GET("/user/list", user.GetUserList)
+		userRouter.POST("/user/pwd/update", user.RestPwd)
 	}
 	hostRouter := routers.Group("/api/v1/resource/host")
 	{

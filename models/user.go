@@ -79,6 +79,14 @@ func (user *User) Update() (err error) {
 	err = Db.Model(&user).Updates(map[string]interface{}{"name_alias": user.NameAlias, "phone": user.Phone, "mail": user.Mail}).Error
 	return
 }
+func (user *User) UpdatePwd() (err error) {
+	var data User
+	if Db.First(&data, user.Id).RecordNotFound() {
+		return errors.New("resource not found")
+	}
+	err = Db.Model(&user).Updates(map[string]interface{}{"password": user.Password}).Error
+	return
+}
 
 func (user *User) Delete(id uint64) (err error) {
 	err = Db.Where("id=?", id).Delete(user).Error

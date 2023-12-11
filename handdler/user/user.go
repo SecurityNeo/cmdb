@@ -277,3 +277,66 @@ func GetUserList(c *gin.Context) {
 		return
 	}
 }
+
+func RestPwd(c *gin.Context) {
+	var user models.User
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": err.Error(),
+			"data":    nil,
+		})
+		return
+	}
+	if user.Id == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "The userid must offered: id",
+			"data":    nil,
+		})
+		return
+	}
+	if user.Id == 1 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "admin is a system default user,unable to update it",
+			"data":    nil,
+		})
+		return
+	}
+
+	if !utils.JudgeBase64(user.Password) {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "Password is not a valid base64 string",
+			"data":    nil,
+		})
+		return
+	}
+
+	encodePwd, err := utils.Encrypt(user.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+			"data":    nil,
+		})
+		return
+	}
+
+	user.Password = encodePwd
+
+	if err := user.UpdatePwd(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+			"data":    nil,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "success",
+		"data":    nil,
+	})
+}
